@@ -4,6 +4,7 @@
 void ofApp::setup(){
 
 	ofSetFrameRate(120);
+	ofSetLogLevel(OF_LOG_VERBOSE);
 
 	// if you don't want to use pointers and vectors, you can just do this:
 	// ofImage img;
@@ -46,6 +47,14 @@ void ofApp::draw(){
 	ofSetColor(255);
 	ofDrawBitmapString("press the spacebar to display a new random image", 20, 35);
 	ofDrawBitmapString("press 'c' to clear the images", 20, 85);
+
+	if(randomImage.isLoading()){
+		ofFill();
+		ofSetColor(255,0,0);
+		ofDrawRectangle(10, 110, 100, 40);
+		ofSetColor(255);
+		ofDrawBitmapString("Loading...", 20, 135);
+	}
 
 }
 

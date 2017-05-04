@@ -29,9 +29,9 @@ void ofxRandomImage::setup(){
 
 	for(ofxRandomImageAPI* api : apis){
 		if(api->loadFromXml(api_keys)){
-			cout << "successfully loaded api " << api->getName() << endl;
+			ofLogVerbose("ofxRandomImage") << "setup: successfully loaded API " << api->getName() << ".";
 		}else {
-			cout << "could not load " << api->getName() << endl;
+			ofLogVerbose("ofxRandomImage") << "setup: could not load API " << api->getName() << ". Maybe the key is missing? Check bin/data/apikeys.xml.";
 		}
 	}
 
@@ -41,6 +41,7 @@ void ofxRandomImage::update(ofEventArgs &e){
 	if(rimg.waiting && rimg.url != ""){
 		rimg.waiting = false;
 		rimg.loading = true;
+		ofLogNotice("ofxRandomImage") << "update: the next random image URL is " << rimg.url;
 		ofLoadURLAsync(rimg.url, "random_image");
 	}
 }
@@ -52,15 +53,13 @@ void ofxRandomImage::urlResponse(ofHttpResponse & response){
 			rimg.loading=false;
 		}
 	}else{
-		cout << response.status << " " << response.error << " for request " << response.request.name << endl;
+		ofLogVerbose("ofxRandomImage") << "urlResponse: " << response.status << " " << response.error << " for request " << response.request.name;
 		if(response.status!=-1) rimg.loading=false;
 		ofRemoveURLRequest(response.request.getId());
 	}
 }
 
 void ofxRandomImage::loadRandomImage(ofImage& image){
-
-	cout << "ofxRandomImage::loadRandomImage" << endl;
 
 	rimg.img = &image;
 	rimg.waiting = true;
@@ -92,3 +91,6 @@ std::string ofxRandomImage::getCurrentmageUrl(){
 	return rimg.url;
 }
 
+bool ofxRandomImage::isLoading(){
+	return rimg.waiting || rimg.loading;
+}

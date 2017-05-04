@@ -16,11 +16,10 @@ std::string ofxRandomImageFlickr::getName(){
 
 void ofxRandomImageFlickr::setup(std::string key){
 	if(key != ""){
-		cout << "setting up flickr api with key " << key << endl;
+		ofLogVerbose("ofxRandomImageFlickr") << "setup: flickr API key " << key << ".";
 		this->key = key;
 		active.set(true);
 		std::string newest_image_query = "https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=" + key + "&per_page=1";
-		cout << "ofxRandomImageFlickr newest image: " << newest_image_query << endl;
 		ofLoadURLAsync(newest_image_query, "flickr_newest_image");
 	}
 }
@@ -36,13 +35,11 @@ bool ofxRandomImageFlickr::loadFromXml(const ofXml& xml){
 
 void ofxRandomImageFlickr::setRandomImageUrl(std::string& url){
 
-	cout << "ofxRandomImageFlickr::setRandomImageUrl" << endl;
-
 	this->url = &url;
 	url = "";
 
 	if(maxId == 0){
-		cout << "ofxRandomImageFlickr::setRandomImageUrl waiting for maxId" << endl;
+		ofLogWarning("ofxRandomImageFlickr") << "setRandomImageUrl: cannot load random image while waiting for maxId.";
 		urlWaiting = true;
 		return;
 	}
@@ -52,7 +49,7 @@ void ofxRandomImageFlickr::setRandomImageUrl(std::string& url){
 	std::string random_image_query = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&photo_id="
 			+ ofToString(id) + "&api_key=" + key;
 
-	cout << "loading random flickr image: " << random_image_query << endl;
+	ofLogVerbose("ofxRandomImageFlickr") << "setRandomImageUrl: trying to load image with id " << id << "(query: " << random_image_query << ").";
 
 	ofLoadURLAsync(random_image_query, "flickr_random_image");
 
@@ -62,16 +59,14 @@ void ofxRandomImageFlickr::urlResponse(ofHttpResponse & response){
 	if(response.status==200){
 		if(response.request.name == "flickr_newest_image"){
 
-			cout << "flickr_newest_image: " << response.data << endl;
-
 			ofXml xml;
 			if(xml.load(response.data)){
 				xml = xml.findFirst("rsp/photos/photo");
 				if(xml){
 					maxId = xml.getAttribute("id").getIntValue();
-					cout << "ofxRandomImageFlickr got maxId "  << maxId << endl;
+					ofLogVerbose("ofxRandomImageFlickr") << "urlResponse: got maxId " << maxId;
 				}else {
-					cout << "could not read newest photo" << endl;
+					ofLogError("ofxRandomImageFlickr") << "urlResponse: could not read newest photo.";
 				}
 
 				if(urlWaiting){
@@ -79,7 +74,7 @@ void ofxRandomImageFlickr::urlResponse(ofHttpResponse & response){
 					setRandomImageUrl(*url);
 				}
 			}else{
-				cout << "could not read newest photo rest response " << endl;
+				ofLogError("ofxRandomImageFlickr") << "urlResponse: could not read newest photo rest response.";
 			}
 
 		}
@@ -102,7 +97,7 @@ void ofxRandomImageFlickr::urlResponse(ofHttpResponse & response){
 
 		}
 	}else{
-		cout << response.status << " " << response.error << " for request " << response.request.name << endl;
+		ofLogVerbose("ofxRandomImageFlickr") << "urlResponse: " << response.status << " " << response.error << " for request " << response.request.name;
 		if(response.status!=-1) {
 
 		}

@@ -24,6 +24,8 @@ class ofxRandomImage {
 		void loadRandomImage(ofImage& image);
 		std::string getCurrentmageUrl();
 
+		bool isLoading();
+
 	private:
 
 		vector<ofxRandomImageAPI*> apis;
