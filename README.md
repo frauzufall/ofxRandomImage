@@ -46,6 +46,7 @@ void draw(){
 
 It currently supports the following sources:
 * **Flickr** <br> Random images from flickr are retrieved by picking a random number between zero and the ID of the newest image. If no image with this number as its ID exists, the process is repeated. (This can take a view tries)
+* **Google Image Search (IN WORK, NOT YET UPLOADED)**<br>The Google Image Search will adapt the method of Dave Mattsons [Random Personal Picture Finder](http://www.diddly.com/random/random.html): It creates a random string that has the format used by default in a few different digital cameras. The image search for such a term returns raw and completely random everyday life snapshots.
 
 ## API keys
 In order to use the APIs you need to get API keys. These are the pages where you can get them:
