@@ -185,7 +185,7 @@ std::string RandomPersonalPictureFinder::generateFileName() {
 		str += "_*";
 	}
 
-	std::string url = site + str + ".jpg" + size + "&adlt=off";
+	std::string url = site + str + ".jpg" + size;
 	if (choice == 30) {
 		std::string strnumber= ofToString(getRandomIndex(99), 2, '0');
 		str = cams[choice];
@@ -193,5 +193,5 @@ std::string RandomPersonalPictureFinder::generateFileName() {
 		url = site + str + "+site%3Apbase.com&hl=en&imgsz=" + size + "&imgsafe=off";
 	}
 
-	return url;
+	return url + "&adlt=off";
 }
