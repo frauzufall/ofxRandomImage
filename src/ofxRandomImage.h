@@ -17,14 +17,12 @@ class ofxRandomImage {
 		~ofxRandomImage();
 
 		void setup();
-		void update();
+		void update(ofEventArgs& e);
 
 		void urlResponse(ofHttpResponse & response);
 
 		void loadRandomImage(ofImage& image);
 		std::string getCurrentmageUrl();
-
-		static std::string parseFromGoogle(string content, int index = 0);
 
 	private:
 
@@ -32,6 +30,8 @@ class ofxRandomImage {
 
 		ofxRandomImageObject rimg;
 		int method = 1;
+
+		bool setupdone;
 
 };
 

@@ -24,7 +24,7 @@ public:
 private:
 
 	ofxRandomImage randomImage;
-	ofImage img;
+	vector<ofPtr<ofImage>> imgs;
 
 };
 

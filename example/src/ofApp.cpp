@@ -5,13 +5,21 @@ void ofApp::setup(){
 
 	ofSetFrameRate(120);
 
+	// if you don't want to use pointers and vectors, you can just do this:
+	// ofImage img;
+	// randomImage.loadRandomImage(img);
+
 	randomImage.setup();
-	randomImage.loadRandomImage(img);
+	ofPtr<ofImage> img(new ofImage());
+	randomImage.loadRandomImage(*img.get());
+
+	imgs.push_back(img);
 
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
+
 }
 
 
@@ -20,13 +28,24 @@ void ofApp::draw(){
 
 	ofBackgroundGradient(ofColor::white, ofColor::gray);
 
-	if(img.isAllocated()){
-		img.draw(0,120);
+	int rowcount = ceil(sqrt(imgs.size()));
+	int width = min(ofGetWidth(), ofGetHeight())/rowcount;
+
+	int i = 0;
+	for(ofPtr<ofImage> img : imgs){
+		if(img->isAllocated()){
+			img->draw((i%rowcount)*width, (i/rowcount)*width, width, width);
+		}
+		i++;
 	}
 
-	ofDrawBitmapString("displaying " + randomImage.getCurrentmageUrl(),20, 50);
-	ofDrawBitmapString("press the spacebar to display a new random image",20, 70);
-	ofDrawBitmapString("[h] show/hide the mouse info",20, 90);
+	ofFill();
+	ofSetColor(0);
+	ofDrawRectangle(10, 10, 400, 40);
+	ofDrawRectangle(10, 60, 250, 40);
+	ofSetColor(255);
+	ofDrawBitmapString("press the spacebar to display a new random image", 20, 35);
+	ofDrawBitmapString("press 'c' to clear the images", 20, 85);
 
 }
 
@@ -42,8 +61,12 @@ void ofApp::keyPressed(int key){
 void ofApp::keyReleased(int key){
 
 	if(key == ' '){
-		img.clear();
-		randomImage.loadRandomImage(img);
+		ofPtr<ofImage> img(new ofImage());
+		randomImage.loadRandomImage(*img.get());
+		imgs.push_back(img);
+	}
+	if(key == 'c'){
+		imgs.clear();
 	}
 
 }

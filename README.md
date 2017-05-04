@@ -1,13 +1,13 @@
 # ofxRandomImage
 
-Addon for [openFrameworks](https://github.com/openframeworks/openFrameworks) to get the URL of a random image.
+An addon for [openFrameworks](https://github.com/openframeworks/openFrameworks) to load a random image.
 
 Its purpose is to celebrate randomness in the massive amount of existing image data online.
 
 ![Screenshot of ofxRandomImage example app](example/example-flickr.png)
 
 ## Usage
-
+Before you can use the addon please read the section **API keys** and make sure they are added to your app.
 ```c++
 // ofApp.h
 

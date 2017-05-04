@@ -1,19 +1,28 @@
+#include "ofAppRunner.h"
 #include "ofxRandomImage.h"
 #include "ofxRandomImageFlickr.h"
 #include "RandomPersonalPictureFinder.h"
 #include <regex>
 
 ofxRandomImage::ofxRandomImage(){
-	ofRegisterURLNotification(this);
 	apis.clear();
 	apis.push_back(new ofxRandomImageFlickr());
+	setupdone = false;
 }
 
 ofxRandomImage::~ofxRandomImage(){
-	ofUnregisterURLNotification(this);
+	if(setupdone){
+		ofUnregisterURLNotification(this);
+		ofRemoveListener(ofEvents().update, this, &ofxRandomImage::update);
+	}
 }
 
 void ofxRandomImage::setup(){
+
+	setupdone = true;
+
+	ofRegisterURLNotification(this);
+	ofAddListener(ofEvents().update, this, &ofxRandomImage::update);
 
 	ofXml api_keys;
 	api_keys.load("apikeys.xml");
@@ -28,7 +37,7 @@ void ofxRandomImage::setup(){
 
 }
 
-void ofxRandomImage::update(){
+void ofxRandomImage::update(ofEventArgs &e){
 	if(rimg.waiting && rimg.url != ""){
 		rimg.waiting = false;
 		rimg.loading = true;
@@ -81,49 +90,5 @@ void ofxRandomImage::loadRandomImage(ofImage& image){
 
 std::string ofxRandomImage::getCurrentmageUrl(){
 	return rimg.url;
-}
-
-std::string ofxRandomImage::parseFromGoogle(string content, int index){
-
-	vector<std::string> urls;
-
-	std::regex regEx("<table class=\"images_table\" style=\"table-layout:fixed\" [^>]+>(.*?)</table>");
-	std::smatch match;
-	std::regex_search(content, match, regEx);
-	int found = match.size();
-
-	if(found != 0) {
-
-		string contents = match[0];
-
-		std::regex imgRegEx("<img[^>]*src=\"([^\"]*)");
-		std::smatch imgMatch;
-		std::regex_search(contents, imgMatch, imgRegEx);
-
-		for (size_t i = 0; i < imgMatch.size(); ++i){
-
-			string contents = imgMatch[i];
-
-			std::regex srcRegEx("src=\"(.*?).$");
-			std::smatch srcMatch;
-			std::regex_search(contents, srcMatch, srcRegEx);
-
-			if (srcMatch.size()!=0) {
-
-				string url = srcMatch[0];
-				url = url.substr(5);
-				cout << "url found: " << url << endl;
-				urls.push_back(url);
-
-			}
-
-		}
-
-	}
-
-	if(urls.size()>0){
-		return urls.at(0);
-	}
-	return "";
 }
 
